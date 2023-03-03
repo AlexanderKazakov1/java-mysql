@@ -12,8 +12,8 @@ services:
     ports:
       - "3306:3306"
 
-  build-project:
-    container_name: app-build-project
+  war:
+    container_name: war
     build:
       dockerfile: Dockerfile
     volumes:
@@ -25,7 +25,7 @@ services:
         condition: service_started
 
   web:
-    container_name: web-project
+    container_name: web
     image: tomcat
     working_dir: /app
     ports:
@@ -39,7 +39,7 @@ services:
       - "target/app.war"
       - "../usr/local/tomcat/webapps/"
     depends_on:
-      build-project:
+      war:
         condition: service_completed_successfully
 
 volumes:

@@ -15,6 +15,7 @@ services:
   war:
     container_name: war
     build:
+      context: .
       dockerfile: Dockerfile
     volumes:
       - type: volume

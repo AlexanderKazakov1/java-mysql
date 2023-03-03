@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: db-mysql
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: testdb1
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: testpassword
+    ports:
+      - "3306:3306"
+
+  build-project:
+    container_name: app-build-project
+    build:
+      dockerfile: Dockerfile
+    volumes:
+      - type: volume
+        source: global
+        target: /app
+    depends_on:
+      db:
+        condition: service_started
+
+  web:
+    container_name: web-project
+    image: tomcat
+    working_dir: /app
+    ports:
+      - '8080:8080'
+    volumes:
+      - type: volume
+        source: global
+        target: /app
+    command:
+      - "cp"
+      - "target/app.war"
+      - "usr/local/tomcat/webapps/"
+    depends_on:
+      build-project:
+        condition: service_completed_successfully
+
+volumes:
+  global:

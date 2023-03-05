@@ -18,27 +18,19 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - type: volume
-        source: global
-        target: /app
+      - global:/app/
     depends_on:
       db:
         condition: service_started
 
   web:
     container_name: web
-    image: tomcat
-    working_dir: /app
+    image: tomcat:8-jdk8
+    working_dir: /app/
     ports:
       - '8080:8080'
     volumes:
-      - type: volume
-        source: global
-        target: /app
-    command:
-      - "cp"
-      - "target/app.war"
-      - "../usr/local/tomcat/webapps/"
+      - global:/usr/local/tomcat/webapps/
     depends_on:
       war:
         condition: service_completed_successfully
